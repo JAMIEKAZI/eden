@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Options extends StatelessWidget {
-  const Options({Key? key, required String Options}) : super(key: key);
+  // ignore: non_constant_identifier_names
+  final String options;
 
-  String get option => 'Option';
+  const Options({Key? key, required this.options}) : super(key: key);
+
+
+  // String get option => 'Options';
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +28,9 @@ class Options extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(option,style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(options,style: const TextStyle(fontWeight: FontWeight.bold)),
                       Radio(
-                        value: option,
+                        value: options,
                         groupValue: 2,
                         onChanged: (value){},
                       ),

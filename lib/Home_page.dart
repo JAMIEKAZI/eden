@@ -1,17 +1,44 @@
+// ignore_for_file: prefer_const_constructors, unused_import, unused_local_variable
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:trivia_quiz/complete_page.dart';
 import 'Options.dart';
-import 'complete_page.dart';
+import 'package:http/http.dart' as http;
+import 'login.dart';
 
-class Homepage extends StatelessWidget {
-  const Homepage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({ Key? key }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-
+  State<HomePage> createState() => _HomePageState();
+}
     String username = 'Jamiekazi';
 
-    return MaterialApp(
-      home: Scaffold(
+
+class _HomePageState extends State<HomePage> {
+
+  List responseData = [];
+  
+  final int number = 0;
+  List<String> shuffledOptions=[];
+   
+  Future api ()async{
+
+      final response =await http.get(Uri.parse('https://opentdb.com/api.php?amount=10'));
+          var data  = jsonDecode(response.body)['results'];
+           setState(() {
+            responseData= data;
+  });}
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    api();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
           leading: const Icon(Icons.menu),
           backgroundColor: Colors.pink,
@@ -109,7 +136,7 @@ class Homepage extends StatelessWidget {
                               const SizedBox(
                                 height: 20,
                               ),
-                              const Text('What is the shortest name in the world'),
+                              Text(responseData.isNotEmpty?responseData[number]['question']:''),
                             ],
                           ),
                         ),
@@ -135,10 +162,10 @@ class Homepage extends StatelessWidget {
                 ),
 
                  const SizedBox(height: 10,),
-                Options(Options: 'option A'),
-                Options(Options: 'option B'),
-                Options(Options: 'option C'),
-                Options(Options: 'option D'),
+                Options(options: responseData.isNotEmpty? responseData[number]['correct_answer']:''),
+                Options(options: responseData.isNotEmpty? responseData[number]['incorrect_answers'][0]:''),
+                Options(options: responseData.isNotEmpty? responseData[number]['incorrect_answers'][0]:''),
+                Options(options: responseData.isNotEmpty? responseData[number]['incorrect_answers'][0]:'' ),
 
                  const SizedBox(height: 5,),
 
@@ -153,7 +180,7 @@ class Homepage extends StatelessWidget {
                         elevation: 5,
                   ),
                       onPressed: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Completed()));
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const Completed()));
                       },
 
                       child: Container(
@@ -170,29 +197,17 @@ class Homepage extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
- buildWelcome (String username) {
-  return Column(
-     crossAxisAlignment: CrossAxisAlignment.start,
-     children: [
-       const Text(
-           'Hello',
-         style: TextStyle(
-           fontSize: 16, color: Colors.white,
-         ),
-       ),
-       Text(
-         username,
-         style: const TextStyle(
-           fontSize: 24,
-           fontWeight: FontWeight.bold,
-           color: Colors.white,
-         ),
-       ),
-     ],
-   );
- }
+//  void nextQuestion (){
+
+//   if (number==9){
+//     Completed();
+//   }
+//   setState ((){
+//     number = number +1;
+//   });
+//  }
+
 
